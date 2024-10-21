@@ -65,7 +65,6 @@ userSchema.pre('save', async function (next) {
 
     // HASH PASSWORD with cost of 12
     this.password = await bcrypt.hash(this.password, 12);
-    // console.log(this.password);
 
     // Delete passwordConfirm field
     this.passwordConfirm = undefined;
@@ -99,7 +98,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
             this.passwordChangedAt.getTime() / 1000,
             10
         );
-        console.log(changedTimestamp, JWTTimestamp);
         return JWTTimestamp < changedTimestamp;
     }
     // Password are not changed
@@ -114,7 +112,7 @@ userSchema.methods.createPasswordResetToken = function () {
         .update(resetToken)
         .digest('hex');
 
-    console.log({ resetToken }, this.passwordResetToken);
+    // console.log({ resetToken }, this.passwordResetToken);
 
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 

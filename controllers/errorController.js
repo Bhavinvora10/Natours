@@ -9,7 +9,6 @@ const handleCastErrorDB = (err) => {
 
 const handleDuplicateFieldsDB = (err) => {
     const value = err.keyValue.name;
-    console.log(value);
 
     const message = `Duplicate field value: ${value}, Please use another value!`;
     return new AppError(message, 400);
@@ -59,7 +58,7 @@ const sendErrorProd = (err, req, res) => {
         }
         // 2) Programming or other unknown error: don't leak error details
         // i) Log Error
-        console.error('Error', err);
+        console.error('Error 💥', err);
         // ii) Send generic message
         return res.status(500).json({
             status: 'error',
@@ -76,7 +75,7 @@ const sendErrorProd = (err, req, res) => {
     }
     // 2) Programming or other unknown error: don't leak error details
     // i) Log Error
-    console.error('Error', err);
+    console.error('Error 💥', err);
     // ii) Send generic message
     return res.status(err.statusCode).render('error', {
         title: 'Something went wrong',
@@ -84,7 +83,7 @@ const sendErrorProd = (err, req, res) => {
     });
 };
 
-module.exports = (err, req, res, next) => {
+module.exports = (err, req, res) => {
     // console.log(err.stack);
 
     err.statusCode = err.statusCode || 500;
