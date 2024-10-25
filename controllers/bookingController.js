@@ -64,11 +64,15 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 // });
 
 const createBookingCheckout = async (session) => {
-    const tour = session.client_reference_id;
-    const user = (await User.findById(session.customer_email)).id;
-    const price = session.line_items[0].price_data.unit_amount / 100; // Convert to dollars
+    try {
+        const tour = session.client_reference_id;
+        const user = (await User.findOne({ email: session.customer_email })).id;
+        const price = session.amount_total / 100; // Stripe's latest API provides `amount_total`
 
-    await Booking.create({ tour, user, price });
+        await Booking.create({ tour, user, price });
+    } catch (err) {
+        console.error('Error creating booking:', err);
+    }
 };
 
 // Create Checkout Session in Production Mode
@@ -77,7 +81,7 @@ exports.webhookCheckout = catchAsync(async (req, res) => {
 
     let event;
     try {
-        event = stripe.event.constructEvent(
+        event = stripe.webhooks.constructEvent(
             req.body,
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
