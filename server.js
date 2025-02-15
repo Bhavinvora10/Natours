@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const http = require('http');
+
+setInterval(() => {
+    http.get('https://natours-aow9.onrender.com/');
+}, 600000);
 
 /* CATCHING UNCAUGHT EXCEPTIONS */
 process.on('uncaughtException', (err) => {
